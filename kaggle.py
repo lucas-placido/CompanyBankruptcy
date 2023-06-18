@@ -4,10 +4,10 @@ from zipfile import ZipFile
 
 '''
 Kaggle dataset url: 
-    https://www.kaggle.com/datasets/utkarshx27/american-companies-bankruptcy-prediction-dataset/download?datasetVersionNumber=3
+    https://www.kaggle.com/datasets/utkarshx27/american-companies-bankruptcy-prediction-dataset
 '''
-os.environ['KAGGLE_USERNAME'] = "<your_username>"
-os.environ['KAGGLE_KEY'] = "<your_kaggle_token>"
+os.environ['KAGGLE_USERNAME'] = "your_username"
+os.environ['KAGGLE_KEY'] = "your_kaggle_token"
 
 directory = os.getcwd()
 

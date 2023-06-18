@@ -15,4 +15,8 @@ init
 '''
 subprocess.run(tf_init, shell = True, check=True)
 
-# docker run -it --rm -v %cd%/terraform:/projeto/ -w /projeto --env-file env.list hashicorp/terraform:light plan
+# alias tform="docker run -it --rm -v %cd%/terraform:/projeto/ -w /projeto --env-file env.list hashicorp/terraform:light"
+# tform init
+# tform plan
+# tform apply
+# tform destroy
