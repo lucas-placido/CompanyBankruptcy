@@ -9,7 +9,8 @@ resource "aws_instance" "tf-ec2-instance" {
 
   depends_on = [aws_iam_role.ec2-role]
   tags = {
-    Name = "tf-ec2"
+    Name = "tf-RUAPI"
+    ec2-RUAPI = "ec2-RandomUserAPI"
   }
 }
 
@@ -32,7 +33,7 @@ resource "aws_security_group" "my-security-group" {
   }
 
   tags = {
-    Name = "my-security-group"
+    ec2-RUAPI = "Network to request data from Random User API"
   }
 }
 
@@ -56,13 +57,13 @@ resource "aws_iam_role" "ec2-role" {
   )
 
   tags = {
-    tag-key = "tag-value"
+    ec2-RUAPI = "Instance role to get access keys and put records on kinesis"
   }
 }
 
 resource "aws_iam_policy" "ec2-iam-policy" {
   name = "ec2-ReadAccess-to-IAM"
-  description = "Access to IAM users and PutRecords on Kinesis"
+  description = "Access to IAM users, PutRecords on Kinesis and CloudWatchAgentServerPolicy"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -90,6 +91,27 @@ resource "aws_iam_policy" "ec2-iam-policy" {
         "kinesis:UpdateShardCount"        
       ],
       "Resource": "${aws_kinesis_stream.kinesis-stream.arn}"
+    },
+    {
+      "Effect" : "Allow",
+      "Action" : [
+        "cloudwatch:PutMetricData",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeTags",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams",
+        "logs:DescribeLogGroups",
+        "logs:CreateLogStream",
+        "logs:CreateLogGroup"
+      ],
+      "Resource" : "*"
+    },
+    {
+      "Effect" : "Allow",
+      "Action" : [
+        "ssm:GetParameter"
+      ],
+      "Resource" : "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
     }
   ]
 }

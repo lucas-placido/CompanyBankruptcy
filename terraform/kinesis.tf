@@ -14,7 +14,7 @@ resource "aws_kinesis_stream" "kinesis-stream" {
   }
 
   tags = {
-    Environment = "Dev"
+    kinesis-RUAPI = "Stream RandomUser data from ec2 instance"
   }
 }
 
@@ -107,8 +107,8 @@ resource "aws_kinesis_firehose_delivery_stream" "tf-kinesis-firehose" {
 
     cloudwatch_logging_options {
       enabled = true
-      log_group_name = "kinesis-firehose-logs"
-      log_stream_name = "RandomUserAPI-logs"
+      log_group_name = "kinesis"
+      log_stream_name = "RandomUserAPI"
     }
   }
 
