@@ -37,7 +37,6 @@ data "aws_iam_policy_document" "firehose_assume_role" {
 resource "aws_iam_role" "firehose_role" {
   name               = "firehose_tf-role"
   assume_role_policy = data.aws_iam_policy_document.firehose_assume_role.json
-
 }
 
 # Create policy document to give permissions to firehose access resources
@@ -93,7 +92,6 @@ resource "aws_kinesis_firehose_delivery_stream" "tf-kinesis-firehose" {
   name = "tf-kinesis-firehose"
   destination = "extended_s3"
 
-
   # Data Source
   kinesis_source_configuration {
     kinesis_stream_arn = aws_kinesis_stream.kinesis-stream.arn
@@ -106,6 +104,12 @@ resource "aws_kinesis_firehose_delivery_stream" "tf-kinesis-firehose" {
     role_arn = aws_iam_role.firehose_role.arn
     buffer_interval = 60
     buffer_size = 1
+
+    cloudwatch_logging_options {
+      enabled = true
+      log_group_name = "kinesis-firehose-logs"
+      log_stream_name = "RandomUserAPI-logs"
+    }
   }
 
   depends_on = [aws_iam_role.firehose_role]

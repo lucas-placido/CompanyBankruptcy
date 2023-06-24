@@ -17,13 +17,7 @@ import uuid
 import time
 import os
 
-region = "us-east-1"
-access_key = "<your_access_key>"
-secret_key = "your_secret_access_key"
-
-client = boto3.client('kinesis', region_name =region,
-                                    aws_access_key_id = access_key,
-                                        aws_secret_access_key = secret_key)
+client = boto3.client('kinesis')
 partition_key = str(uuid.uuid4())
 
 number_of_results = 50
@@ -55,5 +49,5 @@ sudo chmod +x script.py
 sudo ec2-venv/bin/pip3 install boto3==1.15.0
 sudo ec2-venv/bin/pip3 install requests==2.28.2
 
-# Run the Python script
-sudo ec2-venv/bin/python3.9 script.py &
+# Run the Python script in the background
+sudo ec2-venv/bin/python3.9 script.py > output.txt 2>&1 &
