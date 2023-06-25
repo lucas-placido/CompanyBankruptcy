@@ -37,6 +37,11 @@ resource "aws_security_group" "my-security-group" {
   }
 }
 
+resource "aws_key_pair" "tf-key-pair" {
+  key_name = "key-pair"
+  public_key = file("key-pair.pub")
+}
+
 
 resource "aws_iam_role" "ec2-role" {
   name = "tf-ec2-role"
@@ -102,14 +107,16 @@ resource "aws_iam_policy" "ec2-iam-policy" {
         "logs:DescribeLogStreams",
         "logs:DescribeLogGroups",
         "logs:CreateLogStream",
-        "logs:CreateLogGroup"
+        "logs:CreateLogGroup",
+        "logs:PutRetentionPolicy"
       ],
       "Resource" : "*"
     },
     {
       "Effect" : "Allow",
       "Action" : [
-        "ssm:GetParameter"
+        "ssm:GetParameter",
+        "ssm:PutParameter"
       ],
       "Resource" : "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
     }
