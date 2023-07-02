@@ -17,24 +17,42 @@ import uuid
 import time
 import os
 
-client = boto3.client('kinesis', region_name = 'us-east-1')
-partition_key = str(uuid.uuid4())
+class ApiCall:
+    def __init__(self) -> None:
+        self.url = "https://randomuser.me/api/?results="
+        self.number_of_results = 50
 
-number_of_results = 50
-r = requests.get(f"https://randomuser.me/api/?results={number_of_results}")
-data = r.json()['results']
+        self.stream = "tf-kinesis-stream"
+        self.service = "kinesis"
+        self.region = "us-east-1"
 
-while True:
-    # The following chooses a random user from the 50 random users pulled from the API in a single API call.
-    random_user_index = int(random.uniform(0, (number_of_results - 1)))
-    random_user = data[random_user_index]
-    random_user = json.dumps(data[random_user_index])
-    response = client.put_record(
-            StreamName='tf-kinesis-stream',
-            Data=random_user,
-            PartitionKey=partition_key)
-    time.sleep(random.uniform(0, 1))
-    print(response)
+    def create_client(self):
+        client = boto3.client(service_name = self.service, 
+                              region_name = self.region)
+        return client
+    
+    def requestData(self):        
+        r = requests.get(self.url + str(self.number_of_results))
+        data = r.json()['results']
+        return data
+
+    def putRecord(self):
+        client = self.create_client()
+        partition_key = str(uuid.uuid4())
+
+        while True:
+            random_user_index = int(random.uniform(0, (self.number_of_results - 1)))
+            data = self.requestData()
+            random_user = data[random_user_index]
+            random_user = json.dumps(data[random_user_index])
+            response = client.put_record(
+                    StreamName=self.stream,
+                    Data=random_user,
+                    PartitionKey=partition_key)
+            time.sleep(random.uniform(0, 1))
+            print(response)
+
+ApiCall().putRecord()
 EOL
 
 cat > requirements.txt << EOL
